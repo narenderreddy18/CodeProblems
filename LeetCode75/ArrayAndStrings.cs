@@ -1,9 +1,14 @@
 ﻿using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CodeProblems.LC75
 {
@@ -11,9 +16,7 @@ namespace CodeProblems.LC75
     {
         public string MergeStringsAlternatively(string word1, string word2)
         {
-            //You are given two strings word1 and word2. Merge the strings by adding letters in alternating order, starting with word1.
-            //If a string is longer than the other, append the additional letters onto the end of the merged string.Return the merged string.
-            
+           
             int l1 = word1.Length;
             int l2 = word2.Length;
             int maxLength = Math.Max(l1, l2);
@@ -33,18 +36,15 @@ namespace CodeProblems.LC75
 
             return mergedString.ToString();
         }
+
         public string GcdOfStrings(string str1, string str2)
-        {
-            //For two strings s and t, we say "t divides s" if and only if s = t + t + t + ... + t + t(i.e., t is concatenated with itself one or more times).
-            //Given two strings str1 and str2, return the largest string x such that x divides both str1 and str2.
-            
+        {            
             if (str1 + str2 != str2 + str1)
             {
                 return "";
             }
             return str1.Substring(0, Gcd(str1.Length, str2.Length));
         }
-
         static int Gcd(int a, int b)
         {
             if (b == 0)
@@ -52,6 +52,44 @@ namespace CodeProblems.LC75
                 return a;
             }
             return Gcd(b, a % b);
+        }
+       public IList<bool> KidsWithCandies(int[] candies, int extraCandies)
+        {
+            int maxCandies = candies.Max();
+            bool[] result = new bool[candies.Length];
+
+            for (int i = 0; i < candies.Length; i++)
+            {
+                result[i] = (candies[i] + extraCandies) >= maxCandies;
+            }
+            return result;
+        }
+
+        public bool CanPlaceFlowers(int[] flowerbed, int n)
+        {
+            int count = 0;
+            int length = flowerbed.Count();
+
+            //new flowers can be planted in the flowerbed without violating the no-adjacent-flowers rule
+            for (int i = 0; i < length; i++)
+            {
+                if (flowerbed[i] == 0)
+                {
+                    bool emptyPrev = (i == 0 || flowerbed[i - 1] == 0);
+                    bool emptyNext = (i == length - 1 || flowerbed[i + 1] == 0);
+
+                    if (emptyPrev && emptyNext)
+                    {
+                        flowerbed[i] = 1;
+                        count++;
+                        if (count >= n)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return count >= n;
         }
     }
 }
